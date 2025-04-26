@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/persona/static/css/main.e6c13ad2.css",
+    "main.js": "/persona/static/js/main.7a4915e6.js",
+    "static/js/453.df4ccf06.chunk.js": "/persona/static/js/453.df4ccf06.chunk.js",
+    "index.html": "/persona/index.html",
+    "main.e6c13ad2.css.map": "/persona/static/css/main.e6c13ad2.css.map",
+    "main.7a4915e6.js.map": "/persona/static/js/main.7a4915e6.js.map",
+    "453.df4ccf06.chunk.js.map": "/persona/static/js/453.df4ccf06.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.e6c13ad2.css",
+    "static/js/main.7a4915e6.js"
+  ]
+}

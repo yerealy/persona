@@ -1,0 +1,12 @@
+Flask==2.2.2
+flask_sqlalchemy==3.0.0
+python-dotenv==1.0.0
+transformers==4.31.0
+tokenizers==0.13.3
+pymysql==1.0.2
+Werkzeug==2.2.3
+SQLAlchemy==1.4.49 
+torch==1.13.1
+numpy<2.0.0
+cryptography>=41.0.0
+flask-cors

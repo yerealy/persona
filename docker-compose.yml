@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    ports:
+      - "3000:3000"
+    stdin_open: true
+    tty: true
+    depends_on:
+      - backend
+    environment:
+      - REACT_APP_API_URL=http://localhost:5001
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    ports:
+      - "5001:5001"
+    depends_on:
+      - db
+    environment:
+      - DB_USER=mbti_user
+      - DB_PASS=mbti_pass123
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_NAME=mbti_db
+    volumes:
+      - ./frontend/build:/app/static
+
+  db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: mbti_db
+      MYSQL_USER: mbti_user
+      MYSQL_PASSWORD: mbti_pass123
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+volumes:
+  mysql-data:
+
+networks:
+  default:
+    driver: bridge

@@ -1,0 +1,20 @@
+# Dockerfile.backend
+FROM python:3.10-slim
+
+WORKDIR /app
+
+COPY requirements.txt .
+
+RUN pip install --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt -f https://download.pytorch.org/whl/cpu/torch_stable.html
+
+# 백엔드 복사
+COPY backend/ .
+
+# 프론트엔드 빌드 파일 복사 (추가)
+COPY frontend/build /app/static
+
+EXPOSE 5001
+
+# Flask 서버 실행
+CMD ["python", "app.py"]

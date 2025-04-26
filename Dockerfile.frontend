@@ -1,0 +1,12 @@
+FROM node:18
+
+WORKDIR /app
+COPY backend/templates/package.json .
+RUN npm install
+
+COPY backend/templates/ ./
+
+RUN npm run build
+
+# 정적 파일 제공용 nginx (선택)
+
