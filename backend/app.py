@@ -6,6 +6,7 @@ from models import db, UserAnswerLog
 from utils import load_mbti_model, predict_mbti
 from flask_cors import CORS
 import config
+import openai
 
 # Flask 앱 한 번만 생성
 app = Flask(__name__, static_folder="static", static_url_path="")
@@ -15,6 +16,16 @@ CORS(app, origins=["http://localhost:3000"])
 app.config["SQLALCHEMY_DATABASE_URI"] = config.SQLALCHEMY_DATABASE_URI
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = config.SQLALCHEMY_TRACK_MODIFICATIONS
 db.init_app(app)
+
+openai.api_key = "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"
+def generate_image(prompt):
+    response = openai.Image.create(
+        prompt=prompt,
+        n=1,
+        size="1024x1024"
+    )
+    image_url = respone['data'][0]['url']
+    return image_url
 
 # BERT 모델 로딩
 MODEL_DIR = os.path.join(os.path.dirname(__file__), "model")
@@ -70,6 +81,24 @@ def chat_api():
 def get_questions():
     # 여기에 필요한 로직 구현
     return jsonify({"message": "질문 목록 반환"})
+
+# 새로 추가할 /next_question 엔드포인트
+@app.route("/next_question", methods=["POST"])
+def next_question():
+    data = request.get_json()
+    user_answer = data.get('answer')
+
+    # 여기서 '다음 질문' 생성하는 로직 (일단 예시로 고정된 질문 사용)
+    next_q = generate_next_question(user_answer)
+
+    # 생성된 질문에 대해 이미지 생성
+    image_url = generate_image(next_q)
+
+    return jsonify({
+        "question": next_q,
+        "image_url": image_url
+    })
+
 
 # 다른 라우트보다 먼저 정의 - /persona 리다이렉트
 @app.route('/persona')

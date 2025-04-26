@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { FaSyncAlt, FaPaperPlane } from "react-icons/fa";
+const [imageUrl, setImageUrl] = useState("");
 
 const scenarios = [
   {
@@ -48,32 +49,34 @@ const QuestionDisplay = ({ onSubmit }) => {
   };
 
   const handleSubmit = async () => {
-    if (answer.trim() === "") return;
+  if (answer.trim() === "") return;
 
-    const API_URL = process.env.REACT_APP_API_URL;
+  const API_URL = process.env.REACT_APP_API_URL;
 
-    try {
-      const response = await fetch(`${API_URL}/api/chat`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ message: answer }),
-      });
+  try {
+    const response = await fetch(`${API_URL}/next_question`, {  
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ answer }),
+    });
 
-      if (response.ok) {
-        const data = await response.json();
-        alert(`✨ MBTI 예측 결과: ${data.mbti_guess}`);
-        setAnswer("");
-        onSubmit && onSubmit(answer);
-      } else {
-        alert("답변 전송에 실패했습니다. 다시 시도해주세요.");
-      }
-    } catch (error) {
-      console.error("에러 발생:", error);
-      alert("서버와의 통신 중 문제가 발생했습니다.");
+    if (response.ok) {
+      const data = await response.json();
+      setAnswer("");  
+      setCurrentQuestionIndex(0);  // (랜덤 질문 로직 없애거나 조정할 수도 있음)
+      setImageUrl(data.image_url);  
+      scenarios[0].questions[0].question = data.question; 
+    } else {
+      alert("답변 전송에 실패했습니다. 다시 시도해주세요.");
     }
-  };
+  } catch (error) {
+    console.error("에러 발생:", error);
+    alert("서버와의 통신 중 문제가 발생했습니다.");
+  }
+};
+
 
   return (
     <div
@@ -87,11 +90,23 @@ const QuestionDisplay = ({ onSubmit }) => {
         position: "relative",
       }}
     >
-      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "10px" }}>
         <div style={{ fontSize: "24px", fontWeight: "bold" }}>
-          {scenarios[0].questions[currentQuestionIndex].question}
+           {scenarios[0].questions[currentQuestionIndex].question}
         </div>
-        <FaSyncAlt style={{ cursor: "pointer" }} onClick={changeQuestion} />
+
+ 
+      {imageUrl && (
+         <img
+           src={imageUrl}
+           alt="질문 관련 이미지"
+           style={{ width: "300px", borderRadius: "10px", marginTop: "10px" }}
+         />
+       )}
+
+       <FaSyncAlt style={{ cursor: "pointer" }} onClick={changeQuestion} />
+      </div>
+
       </div>
 
       <div
